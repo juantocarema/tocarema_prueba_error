@@ -1,0 +1,11 @@
+.barra-navbar .navbar-brand {
+  font-weight: 700;
+}
+
+.barra-navbar .nav-link {
+  color: #dcdcdc;
+}
+
+.barra-navbar .nav-link:hover {
+  color: #ffffff;
+}
