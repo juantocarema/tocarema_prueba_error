@@ -70,6 +70,14 @@ const CrudEstadoEquipo = () => {
     },
   ];
 
+  // Nota: Se fuerza el color negro para todas las etiquetas de estado
+  // porque se solicitó que las etiquetas aparezcan en negro.
+  // La implementación original por estado queda comentada abajo.
+  const getColorEstado = () => {
+    return "text-dark";
+  };
+
+  /* Implementación original por estado (comentada):
   const getColorEstado = (estado) => {
     switch (estado) {
       case "disponible":
@@ -86,6 +94,7 @@ const CrudEstadoEquipo = () => {
         return "text-muted";
     }
   };
+  */
 
   useEffect(() => {
     cargarEstados();
@@ -97,6 +106,15 @@ const CrudEstadoEquipo = () => {
       setEstados(res.data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // onSaved actualiza la lista localmente sin recargar todo
+  const onSaved = (item, isUpdate) => {
+    if (isUpdate) {
+      setEstados((prev) => prev.map((p) => (p.id_estado_equipo === item.id_estado_equipo ? item : p)));
+    } else {
+      setEstados((prev) => [item, ...prev]);
     }
   };
 
@@ -125,7 +143,8 @@ const CrudEstadoEquipo = () => {
 
     try {
       await apiAxios.delete(`/api/estadoequipo/${id}`);
-      cargarEstados();
+      // Actualizar estado localmente sin recargar la lista
+      setEstados((prev) => prev.filter((p) => p.id_estado_equipo !== id));
       Swal.fire("Eliminado", "Elemento eliminado", "success");
     } catch (error) {
       Swal.fire("Error", "No se pudo eliminar", "error");
@@ -188,10 +207,10 @@ const CrudEstadoEquipo = () => {
             </div>
             <div className="modal-body">
               <EstadoEquipoForm
-                selectedEstado={selectedEstado}
-                refreshData={cargarEstados}
-                hideModal={hideModal}
-              />
+                    selectedEstado={selectedEstado}
+                    onSaved={onSaved}
+                    hideModal={hideModal}
+                  />
             </div>
           </div>
         </div>

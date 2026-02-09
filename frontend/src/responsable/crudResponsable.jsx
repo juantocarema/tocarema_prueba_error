@@ -138,8 +138,8 @@ export default function CrudResponsable() {
         </div>
       </div>
 
+      <h3 className="mb-3">Listado de Responsables</h3>
       <DataTable
-        title="Listado de Responsables"
         columns={columns}
         data={filteredResponsables}
         pagination

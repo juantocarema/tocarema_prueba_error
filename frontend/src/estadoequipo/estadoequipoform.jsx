@@ -15,19 +15,21 @@ const EstadoEquipoForm = ({ selectedEstado, refreshData, hideModal }) => {
     }
   }, [selectedEstado]);
 
+  // Ahora devuelve el item creado/actualizado vía `onSaved` para actualización local
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = { estado };
 
     try {
       if (selectedEstado) {
-        await apiAxios.put(`/api/estadoequipo/${selectedEstado.id_estado_equipo}`, data);
+        const res = await apiAxios.put(`/api/estadoequipo/${selectedEstado.id_estado_equipo}`, data);
         Swal.fire("¡Éxito!", "Estado actualizado", "success");
+        if (typeof onSaved === 'function') onSaved(res.data, /*isUpdate=*/true);
       } else {
-        await apiAxios.post("/api/estadoequipo", data);
+        const res = await apiAxios.post("/api/estadoequipo", data);
         Swal.fire("¡Éxito!", "Estado creado", "success");
+        if (typeof onSaved === 'function') onSaved(res.data, /*isUpdate=*/false);
       }
-      refreshData();
       hideModal();
     } catch (error) {
       console.error('Error guardando estado equipo:', error.response?.data || error);

@@ -71,6 +71,15 @@ const CrudEstadoSolicitud = () => {
     },
   ];
 
+  // Nota: Se fuerza el color negro para todas las etiquetas de estado
+  // porque el requerimiento fue que las etiquetas aparezcan en negro.
+  // Si en el futuro se desea restablecer el color por estado,
+  // descomentar la implementación original (ejemplo comentado abajo).
+  const getColorEstado = () => {
+    return "text-dark";
+  };
+
+  /* Implementación original por estado (comentada):
   const getColorEstado = (estado) => {
     switch (estado) {
       case "generado": return "text-primary";
@@ -81,6 +90,7 @@ const CrudEstadoSolicitud = () => {
       default: return "text-muted";
     }
   };
+  */
 
   useEffect(() => {
     cargarEstados();
@@ -92,6 +102,15 @@ const CrudEstadoSolicitud = () => {
       setEstados(res.data);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  // onSaved recibe el item creado/actualizado y actualiza el estado local
+  const onSaved = (item, isUpdate) => {
+    if (isUpdate) {
+      setEstados((prev) => prev.map((p) => (p.id_estado_solicitud === item.id_estado_solicitud ? item : p)));
+    } else {
+      setEstados((prev) => [item, ...prev]);
     }
   };
 
@@ -109,7 +128,8 @@ const CrudEstadoSolicitud = () => {
 
     try {
       await apiAxios.delete(`/api/estadosolicitud/${id}`);
-      cargarEstados();
+      // Actualizar estado localmente sin recargar toda la lista
+      setEstados((prev) => prev.filter((p) => p.id_estado_solicitud !== id));
       Swal.fire("Eliminado", "Elemento eliminado", "success");
     } catch (error) {
       Swal.fire("Error", "No se pudo eliminar", "error");
@@ -183,7 +203,8 @@ const CrudEstadoSolicitud = () => {
             <div className="modal-body">
               <EstadoSolicitudForm
                 selectedEstado={selectedEstado}
-                refreshData={cargarEstados}
+                // onSaved permite actualizar la lista localmente sin recargar
+                onSaved={onSaved}
                 hideModal={hideModal}
               />
             </div>
