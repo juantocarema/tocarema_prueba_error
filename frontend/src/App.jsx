@@ -171,6 +171,8 @@ function App() {
       });
 
       const userActualizado = { ...userActual, ...res.data };
+      if (userActualizado.password) delete userActualizado.password;
+      
       sessionStorage.setItem("user", JSON.stringify(userActualizado));
       setUserData(userActualizado);
 

@@ -100,8 +100,8 @@ class UserService {
       }
     }
 
-    const { password: _, ...userSinPassword } = user.toJSON();
-    return userSinPassword;
+    const { password, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return safeUser;
   }
 
   async loginUser(data) {
@@ -134,8 +134,8 @@ class UserService {
 
     await registrarLog(user.email, 'LOGIN', 'AUTH', `Inicio de sesión exitoso`);
 
-    const { password: _, ...userSinPassword } = user.toJSON();
-    return { token, user: userSinPassword };
+    const { password: pwd, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return { token, user: safeUser };
   }
 
   // ✅ Obtener todos los usuarios
@@ -173,7 +173,8 @@ class UserService {
 
     await registrarLog('ADMIN', 'APROBAR_USUARIO', 'GESTION_USUARIOS', `Aprobado usuario: ${user.email}`);
 
-    return user;
+    const { password, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return safeUser;
   }
 
   async rechazarUsuario(id) {
@@ -192,7 +193,8 @@ class UserService {
 
     await registrarLog('ADMIN', 'RECHAZAR_USUARIO', 'GESTION_USUARIOS', `Rechazado usuario: ${user.email}`);
 
-    return user;
+    const { password, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return safeUser;
   }
 
   // ✅ Activar/Inactivar usuario (toggle)
@@ -223,7 +225,8 @@ class UserService {
       await registrarLog('ADMIN', 'ACTIVAR_USUARIO', 'GESTION_USUARIOS', `Reactivado usuario: ${user.email}`);
     }
 
-    return { ...user.toJSON(), estado: nuevoEstado };
+    const { password, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return { ...safeUser, estado: nuevoEstado };
   }
 
   // Obtener usuario por ID
@@ -244,7 +247,8 @@ class UserService {
       nombre_ficha: data.nombre_ficha ? String(data.nombre_ficha).trim() : null,
       es_sena_empresa: !!data.es_sena_empresa
     });
-    return user;
+    const { password, token: dbToken, reset_code, reset_code_expires, ...safeUser } = user.toJSON();
+    return safeUser;
   }
 
   // Cambiar contraseña
