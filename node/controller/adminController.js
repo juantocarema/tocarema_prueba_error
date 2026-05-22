@@ -28,7 +28,8 @@ export const cambiarEstado = async (req, res) => {
     usuario.estado = estado;
     await usuario.save();
 
-    res.json({ message: `Usuario ${estado} correctamente`, usuario });
+    const { password: _, ...userSinPassword } = usuario.toJSON();
+    res.json({ message: `Usuario ${estado} correctamente`, usuario: userSinPassword });
   } catch (err) {
     res.status(500).json({ message: "Error al actualizar estado" });
   }
