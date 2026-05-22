@@ -84,6 +84,7 @@ const Sidebar = ({ isAuth, logOut, users, rol, onAprobado }) => {
       items: [
         { icon: "👥", text: "Gestión Usuarios", path: "/gestion-usuarios", show: true },
         { icon: "📜", text: "Historial de Accesos", path: "/auditoria", show: true },
+        { icon: "📥", text: "Importar Usuarios", path: "/importar-usuarios", show: true },
       ]
     },
   ];

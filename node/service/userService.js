@@ -6,6 +6,7 @@ import NotificacionService from "./notificacionService.js";
 import emailService from "./emailService.js";
 import { registrarLog } from "./logService.js";
 import { getIO } from "../socket.js";
+import UsuariosPermitidosModel from "../models/UsuariosPermitidosModel.js";
 
 class UserService {
 
@@ -58,6 +59,12 @@ class UserService {
 
     const existDoc = await UserModel.findOne({ where: { documento } });
     if (existDoc) throw new Error("Ya existe un usuario con ese número de documento");
+
+    // ✅ VALIDAR CONTRA BASE DE DATOS DE USUARIOS PERMITIDOS (EXCEL IMPORTADO)
+    const isAllowed = await UsuariosPermitidosModel.findOne({ where: { documento } });
+    if (!isAllowed) {
+      throw new Error("Acceso denegado: Tu número de documento no se encuentra en la base de datos de personas autorizadas para registrarse.");
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await UserModel.create({

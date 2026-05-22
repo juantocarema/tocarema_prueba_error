@@ -17,6 +17,7 @@ import NotificacionModel from "./notificacionModel.js";
 import SolicitudAccesoModel from "./solicitudAccesoModel.js";
 import LogModel from "./logModel.js";
 import ConfigModel from "./configModel.js";
+import UsuariosPermitidosModel from "./UsuariosPermitidosModel.js";
 
 // EQUIPOS ↔ CUENTADANTE
 equipoModel.belongsTo(cuentadanteModel, { foreignKey: 'id_cuentadante', as: 'cuentadante' });
